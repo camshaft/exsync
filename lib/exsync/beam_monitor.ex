@@ -14,16 +14,31 @@ defmodule ExSync.BeamMonitor do
       }
    |> case do
         {_, _, true, true} ->   # update
-          IO.puts "reload module #{Path.basename file_path, ".beam"}"
+          log(file_path, "reload")
           ExSync.Utils.reload file_path
         {true, true, _, false} -> # temp file
           nil
         {_, true, _, false} ->  # remove
-          IO.puts "unload module #{Path.basename file_path, ".beam"}"
+          log(file_path, "unload")
           ExSync.Utils.unload file_path
         _ ->                    # create
           nil
       end
+    end
+  end
+
+  defp log(file_path, mode) do
+    if ExSync.Config.verbose? do
+      IO.puts "#{mode} module #{format_name(file_path)}"
+    end
+  end
+
+  defp format_name(path) do
+    case Path.basename(path, ".beam") do
+      "Elixir." <> module ->
+        module
+      module ->
+        module
     end
   end
 end

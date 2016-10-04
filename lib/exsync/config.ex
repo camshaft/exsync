@@ -38,4 +38,16 @@ defmodule ExSync.Config do
   def app_source_dir do
     Path.dirname Mix.ProjectStack.peek.file
   end
+
+  def verbose? do
+    Application.get_env(:exsync, :verbose?, false)
+  end
+
+  def watchers do
+    Application.get_env(:exsync, :watchers, [])
+  end
+
+  def watchers(fun) do
+    Application.put_env(:exsync, :watchers, watchers() ++ [fun])
+  end
 end
